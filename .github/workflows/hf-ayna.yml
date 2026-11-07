@@ -1,0 +1,51 @@
+# Hugging Face -> GitHub ayna
+# Her gün 04:00 UTC'de (ve "Run workflow" düğmesiyle elle) HF veri kümesini indirir,
+# bu depoya kopyalar, değişiklik varsa commit atar. .github klasörüne dokunmaz.
+name: HF ayna
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hf-ayna
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      HF_REPO: https://huggingface.co/datasets/leventbulut/bulut-doctrine-wikibase
+    steps:
+      - name: GitHub deposunu al
+        uses: actions/checkout@v4
+        with:
+          path: gh
+
+      - name: Hugging Face deposunu indir
+        run: |
+          git lfs install
+          git clone --depth 1 "$HF_REPO" hf
+
+      - name: Dosyaları eşitle
+        run: |
+          rsync -a --delete --exclude '.git/' --exclude '.github/' --exclude '.gitattributes' hf/ gh/
+          [ -f hf/.gitattributes ] && cp hf/.gitattributes gh/.gitattributes || true
+
+      - name: Değişiklik varsa commit at
+        working-directory: gh
+        run: |
+          git config user.name "hf-mirror-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Değişiklik yok."
+          else
+            HF_SHA=$(git -C ../hf rev-parse --short HEAD)
+            git commit -m "HF aynası: huggingface.co/datasets/leventbulut/bulut-doctrine-wikibase @ $HF_SHA"
+            git push
+          fi
