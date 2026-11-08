@@ -17,6 +17,8 @@ size_categories:
 
 This dataset is a JSON export of **leventbulut.wikibase.cloud**, the personal Wikibase instance of Levent Bulut, a former journalist, author and the founder of the Objective Projection method. The instance is not reachable by search-engine crawlers because of the hosting provider's bot protection, so its contents are mirrored here.
 
+The `url` field and the ID links below point to the original records on the Wikibase. They are kept as the source of each record, even though the Wikibase itself is not crawlable; the full content of every record is in the files here.
+
 **This is not Wikidata.** Item numbers (Q1, Q5, …) belong to the leventbulut.wikibase.cloud instance and do not refer to Wikidata items.
 
 ## Contents
@@ -95,6 +97,8 @@ The data was exported on 7 November 2026 with the SPARQL query `SELECT * WHERE {
 ## Links
 
 - Website: https://leventbulut.com/
+- Knowledge graph page on the website: https://leventbulut.com/graph/
+- Corpus of registered works: https://leventbulut.com/corpus/
 - ORCID: https://orcid.org/0009-0007-7500-2261
 - Main dataset: https://huggingface.co/datasets/leventbulut/objective-projection (DOI 10.57967/hf/8960)
 - GitHub mirror of this dataset: https://github.com/levent-bulut/bulut-doctrine-wikibase
